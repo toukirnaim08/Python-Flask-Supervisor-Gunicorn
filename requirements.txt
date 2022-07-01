@@ -1,0 +1,6 @@
+# Flask
+Flask
+flask
+gunicorn
+supervisor
+python-dotenv
