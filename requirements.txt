@@ -1,6 +1,11 @@
-# Flask
 Flask
-flask
 gunicorn
 supervisor
 python-dotenv
+environs
+# Swagger
+flasgger
+
+# JSON Schema Input Validation
+jsonschema
+flask_restful
