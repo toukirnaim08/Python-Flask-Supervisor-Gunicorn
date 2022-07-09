@@ -7,6 +7,8 @@ from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from werkzeug.exceptions import BadRequest
 
+import application.api.models as _models
+
 
 def register_blueprint(app):
     api_bp = flask.Blueprint('api',
@@ -20,21 +22,22 @@ def register_blueprint(app):
 
 
 class TestContent(Resource):
+    # Validation schema
     PRINT_CONTENT_JSONSCHEMA = {
         "type": "object",
         "properties": {
-            "heading": {"type": "string"},
-            "qr": {"type": "string"},
-            "body": {"type": "array"},
-            "include_timestamp": {"type": "boolean"},
+            "var1": {"type": "string"},
+            "var2": {"type": "string"},
         },
-        "required": ["heading", "qr", "include_timestamp"],
+        "required": ["var1", "var2"],
         "additionalProperties": False
     }
 
-    def get(self):
-        """Send request to cloud printer
+    def post(self):
+        """Test api 1
         ---
+        tags:
+          - Test
         requestBody:
           required: true
           content:
@@ -42,42 +45,23 @@ class TestContent(Resource):
               schema:
                 type: object
                 properties:
-                  heading:
+                  var1:
                     type: string
-                  qr:
+                  var2:
                     type: string
-                  body:
-                    type: array
-                    items:
-                      type: string
-                      example: "prod"
-                  include_timestamp:
-                    type: boolean
-                    default: true
                 required:
-                  - heading
-                  - qr
-                  - include_timestamp
+                  - var1
+                  - var2
         responses:
           '200':
-            response: ok
+            description: ok
         """
         # Now apply json schema validation
-        # r = PrintContent.validate_json_schema(PrintContent.PRINT_CONTENT_JSONSCHEMA,
-        #                                       payload_expected=True)
-        # # We generate job id using heading, data and body
-        # job_id = PrintContent.sha256(data=r)
-		#
-        # # If we pass in job_id to queue, then only one task can exist with that name
-        # tasks.queue_async_send_printing_request(
-        #     job_id=job_id,
-        #     heading=r['heading'],
-        #     qr=r['qr'],
-        #     body=r['body'] if 'body' in r else None,
-        #     include_timestamp=r['include_timestamp']
-        # )
+        r = TestContent.validate_json_schema(TestContent.PRINT_CONTENT_JSONSCHEMA,
+                                             payload_expected=True)
+        model = _models.Model1(**r)
 
-        return flask.jsonify({"response": "ok"})
+        return flask.jsonify(model.build_rest())
 
     @staticmethod
     def validate_json_schema(schema, payload_expected=True):
@@ -98,13 +82,3 @@ class TestContent(Resource):
         except ValidationError as e:
             raise BadRequest("Invalid payload format - %s" % e.message)
         return r
-
-    @staticmethod
-    def sha256(data: typing.Dict):
-        x = data['heading'] + data['qr']
-        if 'body' in data:
-            x += "".join(data['body'])
-
-        m = hashlib.sha256()
-        m.update(x.encode('utf8'))
-        return m.hexdigest()

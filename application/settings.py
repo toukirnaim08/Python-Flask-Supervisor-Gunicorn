@@ -16,16 +16,8 @@ DEBUG = ENV == "development"
 
 APPLICATION_ROOT = "/rest-service"
 
-# RQ_REDIS_URL = env.str("RQ_REDIS_URL", "redis://localhost:6379/0")
-#
-# # Printer Configuration
-# PRINTER_ENABLED = env.bool("PRINTER_ENABLED", default=True)
-# PRINTER_URL = env.str("PRINTER_URL", default="http://global1.feieapi.com")
-# PRINTER_SN = env.str("PRINTER_SN")
-# PRINTER_KEY = env.str("PRINTER_KEY")
-#
 SWAGGER = {
-    'title': 'Unido Printing Service',
+    'title': 'Rest Service Testing',
     "version": "1.0.0",
 
     'uiversion': 3,

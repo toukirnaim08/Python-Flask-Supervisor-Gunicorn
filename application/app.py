@@ -17,16 +17,13 @@ def create_app(config_object="application.settings"):
 
 def register_extensions(app):
     """Register Flask extensions."""
-    # rq.init_app(application)
-    # load_swagger_component_schemas(application)
+    load_swagger_component_schemas(app)
     swagger.init_app(app)
-    # print_service.init_app(application)
 
 
 def register_blueprints(app):
     """Register Flask blueprints."""
     api.views.register_blueprint(app)
-    # tools.views.register_blueprint(application)
 
     @app.route('/')
     def home():
